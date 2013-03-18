@@ -11,24 +11,27 @@ logger = logging.getLogger(__name__)
 def timezone_for(location):
     """Determine what timezone the provided location falls in."""
 
-    the_timezones = Timezone.objects.filter(mpoly__contains=location)
-    tzinfo = False
+    if location is not None:
+        the_timezones = Timezone.objects.filter(mpoly__contains=location)
+        tzinfo = False
 
-    if the_timezones.count() == 1:  # one timezone - this is normal
-        the_timezone = the_timezones[0]
-    elif the_timezones.count() == 0:  # no timezone found for that location
-        the_timezone = False
-    else:  # multiple returned - is there anywhere that will trigger that?
-        # how do we determine?
-        the_timezone = False
+        if the_timezones.count() == 1:  # one timezone - this is normal
+            the_timezone = the_timezones[0]
+        elif the_timezones.count() == 0:  # no timezone found for that location
+            the_timezone = False
+        else:  # multiple returned - is there anywhere that will trigger that?
+            # how do we determine?
+            the_timezone = False
 
-    try:
-        if the_timezone != False:
-            tzinfo = timezone(the_timezone.tzid)
-    except UnknownTimeZoneError:
-        pass
+        try:
+            if the_timezone != False:
+                tzinfo = timezone(the_timezone.tzid)
+        except UnknownTimeZoneError:
+            pass
 
-    return tzinfo
+        return tzinfo
+
+    return False
 
 
 def time_at(the_datetime, location):

@@ -126,17 +126,17 @@
 <div id="content-header">
   <h1>
     <span id="module-name">timezones.utils</span>:
-    28 total statements,
+    30 total statements,
     <span class="normal">100.0% covered</span>
   </h1>
-  <p>Generated: Mon 2013-03-18 12:49 CDT</p>
+  <p>Generated: Mon 2013-03-18 13:06 CDT</p>
   <p>Source file: /Users/adam/.virtualenvs/timezones/src/geodjango-timezones/timezones/utils.py</p>
   <p>
     Stats:
-    <span class="executed">25 executed</span>,
+    <span class="executed">27 executed</span>,
     <span class="missed">0 missed</span>,
     <span class="excluded">3 excluded</span>,
-    <span class="ignored">36 ignored</span> 
+    <span class="ignored">37 ignored</span> 
   </p> 
 </div>
 
@@ -155,24 +155,27 @@
 <li class="executed"><code>def timezone_for(location):</code></li>
 <li class="ignored"><code>    """Determine what timezone the provided location falls in."""</code></li>
 <li class="ignored"><code></code></li>
-<li class="executed"><code>    the_timezones = Timezone.objects.filter(mpoly__contains=location)</code></li>
-<li class="executed"><code>    tzinfo = False</code></li>
+<li class="executed"><code>    if location is not None:</code></li>
+<li class="executed"><code>        the_timezones = Timezone.objects.filter(mpoly__contains=location)</code></li>
+<li class="executed"><code>        tzinfo = False</code></li>
 <li class="ignored"><code></code></li>
-<li class="executed"><code>    if the_timezones.count() == 1:  # one timezone - this is normal</code></li>
-<li class="executed"><code>        the_timezone = the_timezones[0]</code></li>
-<li class="executed"><code>    elif the_timezones.count() == 0:  # no timezone found for that location</code></li>
-<li class="executed"><code>        the_timezone = False</code></li>
-<li class="ignored"><code>    else:  # multiple returned - is there anywhere that will trigger that?</code></li>
-<li class="ignored"><code>        # how do we determine?</code></li>
-<li class="executed"><code>        the_timezone = False</code></li>
+<li class="executed"><code>        if the_timezones.count() == 1:  # one timezone - this is normal</code></li>
+<li class="executed"><code>            the_timezone = the_timezones[0]</code></li>
+<li class="executed"><code>        elif the_timezones.count() == 0:  # no timezone found for that location</code></li>
+<li class="executed"><code>            the_timezone = False</code></li>
+<li class="ignored"><code>        else:  # multiple returned - is there anywhere that will trigger that?</code></li>
+<li class="ignored"><code>            # how do we determine?</code></li>
+<li class="executed"><code>            the_timezone = False</code></li>
 <li class="ignored"><code></code></li>
-<li class="executed"><code>    try:</code></li>
-<li class="executed"><code>        if the_timezone != False:</code></li>
-<li class="executed"><code>            tzinfo = timezone(the_timezone.tzid)</code></li>
-<li class="executed"><code>    except UnknownTimeZoneError:</code></li>
-<li class="executed"><code>        pass</code></li>
+<li class="executed"><code>        try:</code></li>
+<li class="executed"><code>            if the_timezone != False:</code></li>
+<li class="executed"><code>                tzinfo = timezone(the_timezone.tzid)</code></li>
+<li class="executed"><code>        except UnknownTimeZoneError:</code></li>
+<li class="executed"><code>            pass</code></li>
 <li class="ignored"><code></code></li>
-<li class="executed"><code>    return tzinfo</code></li>
+<li class="executed"><code>        return tzinfo</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>    return False</code></li>
 <li class="ignored"><code></code></li>
 <li class="ignored"><code></code></li>
 <li class="executed"><code>def time_at(the_datetime, location):</code></li>

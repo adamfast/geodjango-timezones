@@ -96,6 +96,17 @@ class TimezoneTests(TestCase):
         self.assertEqual(str(with_zone), '2012-04-15 10:00:00')
         self.assertEqual(with_zone.tzinfo, None)
 
+    def test_no_location(self):
+        loc = None
+        the_time = datetime.datetime(2012, 4, 15, 10)
+
+        the_timezone = timezone_for(loc)
+        self.assertFalse(the_timezone)
+
+        with_zone = time_at(the_time, loc)
+        self.assertEqual(str(with_zone), '2012-04-15 10:00:00')
+        self.assertEqual(with_zone.tzinfo, None)
+
     def test_management(self):
         try:
             call_command('load_timezones')
