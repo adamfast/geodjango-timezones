@@ -1,5 +1,6 @@
 import datetime
 
+from geopy.point import Point as GeoPyPoint
 from pytz import timezone
 
 from django.contrib.auth.models import User
@@ -8,6 +9,7 @@ from django.core.management import call_command
 from django.test import TestCase
 
 from timezones.models import *
+from timezones.exceptions import UnknownPointException
 from timezones.management.commands.load_timezones import NoShapeFileException
 from timezones.utils import time_at, timezone_for, time_for
 
@@ -47,6 +49,52 @@ class TimezoneTests(TestCase):
         in_ny = time_for(with_zone, Point((-73.8726111, 40.7772500)))  # KLGA
         self.assertEqual(str(in_ny), '2012-04-15 11:00:00-04:00')
         self.assertEqual(str(in_ny.tzinfo), 'America/New_York')
+
+    def test_lawrence_ks_geopy(self):
+        # GEOPY IS LATITUDE, LONGITUDE
+        loc = GeoPyPoint(38.971667, -95.235278)  # lawrence, ks
+
+        the_time_non_dst = datetime.datetime(2012, 2, 19, 10) # this is not during daylight savings time, -6
+
+        the_timezone = timezone_for(loc)
+        self.assertEqual(the_timezone, timezone('America/Chicago'))
+
+        with_zone = time_at(the_time_non_dst, loc)
+        self.assertEqual(str(with_zone), '2012-02-19 10:00:00-06:00')
+        self.assertEqual(str(with_zone.tzinfo), 'America/Chicago')
+
+        the_time_dst = datetime.datetime(2012, 4, 15, 10) # this is during daylight savings time, -5
+
+        with_zone = time_at(the_time_dst, loc)
+        self.assertEqual(str(with_zone), '2012-04-15 10:00:00-05:00')
+        self.assertEqual(str(with_zone.tzinfo), 'America/Chicago')
+
+        # GEOPY IS LATITUDE, LONGITUDE
+        in_ny = time_for(with_zone, GeoPyPoint(40.7772500, -73.8726111))  # KLGA
+        self.assertEqual(str(in_ny), '2012-04-15 11:00:00-04:00')
+        self.assertEqual(str(in_ny.tzinfo), 'America/New_York')
+
+    def test_lawrence_ks_custom(self):
+        class MySpecialPoint(object):
+            def __init__(self, *args, **kwargs):
+                self.latitude = kwargs['latitude']
+                self.longitude = kwargs['longitude']
+
+        loc = MySpecialPoint(longitude=-95.235278, latitude=38.971667)  # lawrence, ks
+
+        the_time_non_dst = datetime.datetime(2012, 2, 19, 10) # this is not during daylight savings time, -6
+
+        try:
+            the_timezone = timezone_for(loc)
+            self.fail("Did not return expected UnknownPointException")
+        except UnknownPointException:
+            pass
+
+        try:
+            in_ny = timezone_for(MySpecialPoint(longitude=-73.8726111, latitude=40.7772500))  # KLGA
+            self.fail("Did not return expected UnknownPointException")
+        except UnknownPointException:
+            pass
 
     def test_out_of_area(self):
         loc = Point((-99.133333, 19.433333))  # mexico city, outside the bounds of the JSON fixture

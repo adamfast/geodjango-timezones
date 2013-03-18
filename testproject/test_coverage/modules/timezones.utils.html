@@ -126,17 +126,17 @@
 <div id="content-header">
   <h1>
     <span id="module-name">timezones.utils</span>:
-    30 total statements,
-    <span class="normal">100.0% covered</span>
+    44 total statements,
+    <span class="normal">94.7% covered</span>
   </h1>
-  <p>Generated: Mon 2013-03-18 13:06 CDT</p>
+  <p>Generated: Mon 2013-03-18 13:40 CDT</p>
   <p>Source file: /Users/adam/.virtualenvs/timezones/src/geodjango-timezones/timezones/utils.py</p>
   <p>
     Stats:
-    <span class="executed">27 executed</span>,
-    <span class="missed">0 missed</span>,
-    <span class="excluded">3 excluded</span>,
-    <span class="ignored">37 ignored</span> 
+    <span class="executed">36 executed</span>,
+    <span class="missed">2 missed</span>,
+    <span class="excluded">6 excluded</span>,
+    <span class="ignored">41 ignored</span> 
   </p> 
 </div>
 
@@ -144,8 +144,16 @@
   <ol>
     <li class="excluded"><code>import logging</code></li>
 <li class="ignored"><code></code></li>
+<li class="ignored"><code># geopy is not required, but if users want to specify one of their points, work with it</code></li>
+<li class="executed"><code>try:</code></li>
+<li class="excluded"><code>    from geopy.point import Point</code></li>
+<li class="missed"><code>except ImportError:</code></li>
+<li class="missed"><code>    pass</code></li>
+<li class="ignored"><code></code></li>
+<li class="excluded"><code>from django.contrib.gis.geos import Point</code></li>
 <li class="excluded"><code>from pytz import timezone, UnknownTimeZoneError</code></li>
 <li class="ignored"><code></code></li>
+<li class="excluded"><code>from timezones.exceptions import UnknownPointException</code></li>
 <li class="excluded"><code>from timezones.models import *</code></li>
 <li class="ignored"><code></code></li>
 <li class="ignored"><code></code></li>
@@ -156,6 +164,16 @@
 <li class="ignored"><code>    """Determine what timezone the provided location falls in."""</code></li>
 <li class="ignored"><code></code></li>
 <li class="executed"><code>    if location is not None:</code></li>
+<li class="executed"><code>        try:</code></li>
+<li class="executed"><code>            location.wkt</code></li>
+<li class="executed"><code>        except AttributeError:  # it's not a GeoDjango point. Is it GeoPy?</code></li>
+<li class="executed"><code>            try:</code></li>
+<li class="executed"><code>                location.POINT_PATTERN  # try something a GeoPy Point would have</code></li>
+<li class="executed"><code>                location = Point(location.longitude, location.latitude, location.altitude)</code></li>
+<li class="executed"><code>            except AttributeError:</code></li>
+<li class="ignored"><code>                # in the interest of not going on forever here, I'm going to punt on supporting custom classes even with obvious names (lat/lon); though I'm not opposed to doing that</code></li>
+<li class="executed"><code>                raise UnknownPointException</code></li>
+<li class="ignored"><code></code></li>
 <li class="executed"><code>        the_timezones = Timezone.objects.filter(mpoly__contains=location)</code></li>
 <li class="executed"><code>        tzinfo = False</code></li>
 <li class="ignored"><code></code></li>

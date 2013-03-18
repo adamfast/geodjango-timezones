@@ -1,7 +1,15 @@
 import logging
 
+# geopy is not required, but if users want to specify one of their points, work with it
+try:
+    from geopy.point import Point
+except ImportError:
+    pass
+
+from django.contrib.gis.geos import Point
 from pytz import timezone, UnknownTimeZoneError
 
+from timezones.exceptions import UnknownPointException
 from timezones.models import *
 
 
@@ -12,6 +20,16 @@ def timezone_for(location):
     """Determine what timezone the provided location falls in."""
 
     if location is not None:
+        try:
+            location.wkt
+        except AttributeError:  # it's not a GeoDjango point. Is it GeoPy?
+            try:
+                location.POINT_PATTERN  # try something a GeoPy Point would have
+                location = Point(location.longitude, location.latitude, location.altitude)
+            except AttributeError:
+                # in the interest of not going on forever here, I'm going to punt on supporting custom classes even with obvious names (lat/lon); though I'm not opposed to doing that
+                raise UnknownPointException
+
         the_timezones = Timezone.objects.filter(mpoly__contains=location)
         tzinfo = False
 
