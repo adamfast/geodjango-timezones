@@ -126,14 +126,14 @@
 <div id="content-header">
   <h1>
     <span id="module-name">timezones.utils</span>:
-    44 total statements,
-    <span class="normal">94.7% covered</span>
+    45 total statements,
+    <span class="normal">94.9% covered</span>
   </h1>
-  <p>Generated: Mon 2013-03-18 13:40 CDT</p>
+  <p>Generated: Mon 2013-03-18 16:57 MDT</p>
   <p>Source file: /Users/adam/.virtualenvs/timezones/src/geodjango-timezones/timezones/utils.py</p>
   <p>
     Stats:
-    <span class="executed">36 executed</span>,
+    <span class="executed">37 executed</span>,
     <span class="missed">2 missed</span>,
     <span class="excluded">6 excluded</span>,
     <span class="ignored">41 ignored</span> 
@@ -211,6 +211,7 @@
 <li class="executed"><code>    tzinfo = timezone_for(location)</code></li>
 <li class="ignored"><code></code></li>
 <li class="executed"><code>    if tzinfo != False:  # also type-check that the_datetime is a datetime or something we can replace the TZinfo on</code></li>
+<li class="executed"><code>        the_datetime = the_datetime.replace(tzinfo=None)  # strip the existing (if there) timezone out so we can re-localize</code></li>
 <li class="executed"><code>        return tzinfo.localize(the_datetime)</code></li>
 <li class="ignored"><code></code></li>
 <li class="executed"><code>    logger.error("A timezone could not be found for %s" % location)</code></li>

@@ -3,11 +3,14 @@ import datetime
 from geopy.point import Point as GeoPyPoint
 from pytz import timezone
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.gis.geos import Point, Polygon, MultiPolygon
 from django.core.management import call_command
+from django import forms
 from django.test import TestCase
 
+from timezones.forms import LocationTimezoneAwareDateTimeField, LocationTimezoneAwareForm
 from timezones.models import *
 from timezones.exceptions import UnknownPointException
 from timezones.management.commands.load_timezones import NoShapeFileException
@@ -161,3 +164,26 @@ class TimezoneTests(TestCase):
             self.fail("Did not raise expected NoShapeFileException.")
         except NoShapeFileException:
             pass
+
+
+class TzForm(LocationTimezoneAwareForm):
+    time = LocationTimezoneAwareDateTimeField()
+
+
+class TimezoneFormTests(TestCase):
+    fixtures = ['timezones.json']
+
+    loc = Point((-95.235278, 38.971667))  # lawrence, ks
+
+    def test_no_location(self):
+        form = TzForm({'time': '2013-03-18 12:00'})
+
+        self.assertEqual(form.is_valid(), True)
+        self.assertEqual(form.cleaned_data['time'], timezone(settings.TIME_ZONE).localize(datetime.datetime(2013, 3, 18, 12)))
+
+    def test_with_location(self):
+        form = TzForm({'time': '2013-03-18 12:00'})
+        form.location = self.loc
+
+        self.assertEqual(form.is_valid(), True)
+        self.assertEqual(form.cleaned_data['time'], timezone('America/Chicago').localize(datetime.datetime(2013, 3, 18, 12)))

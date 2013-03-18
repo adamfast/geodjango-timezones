@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
-    <title>Test coverage report: timezones.models</title>
+    <title>Test coverage report: timezones.forms</title>
     <style type="text/css" media="screen">
       a
       {
@@ -119,48 +119,57 @@
   <body>
 
 <div class="nav">
-  <a href="timezones.management.commands.load_timezones.html">timezones.management.commands.load_timezones</a> &lt;&lt;
+  <a href="timezones.exceptions.html">timezones.exceptions</a> &lt;&lt;
   <a href="../index.html">index</a>
-  &gt;&gt; <a href="timezones.utils.html">timezones.utils</a>
+  &gt;&gt; <a href="timezones.management.commands.load_timezones.html">timezones.management.commands.load_timezones</a>
 </div>
 
 <div id="content-header">
   <h1>
-    <span id="module-name">timezones.models</span>:
-    7 total statements,
+    <span id="module-name">timezones.forms</span>:
+    13 total statements,
     <span class="normal">100.0% covered</span>
   </h1>
   <p>Generated: Mon 2013-03-18 16:57 MDT</p>
-  <p>Source file: /Users/adam/.virtualenvs/timezones/src/geodjango-timezones/timezones/models.py</p>
+  <p>Source file: /Users/adam/.virtualenvs/timezones/src/geodjango-timezones/timezones/forms.py</p>
   <p>
     Stats:
-    <span class="executed">4 executed</span>,
+    <span class="executed">11 executed</span>,
     <span class="missed">0 missed</span>,
-    <span class="excluded">3 excluded</span>,
-    <span class="ignored">4 ignored</span> 
+    <span class="excluded">2 excluded</span>,
+    <span class="ignored">7 ignored</span> 
   </p> 
 </div>
 
 <div id="source-listing">
   <ol>
-    <li class="excluded"><code>from django.contrib.gis.db import models</code></li>
+    <li class="excluded"><code>from django import forms</code></li>
+<li class="ignored"><code></code></li>
+<li class="excluded"><code>from timezones.utils import time_at</code></li>
 <li class="ignored"><code></code></li>
 <li class="ignored"><code></code></li>
-<li class="executed"><code>class Timezone(models.Model):</code></li>
-<li class="executed"><code>    tzid = models.CharField(max_length=128)</code></li>
-<li class="executed"><code>    mpoly = models.MultiPolygonField()</code></li>
+<li class="executed"><code>class LocationTimezoneAwareDateTimeField(forms.DateTimeField):</code></li>
+<li class="executed"><code>    pass</code></li>
 <li class="ignored"><code></code></li>
-<li class="executed"><code>    objects = models.GeoManager()</code></li>
 <li class="ignored"><code></code></li>
-<li class="excluded"><code>    def __unicode__(self):</code></li>
-<li class="excluded"><code>        return self.tzid</code></li>
+<li class="executed"><code>class LocationTimezoneAwareForm(forms.Form):</code></li>
+<li class="executed"><code>    def clean(self):</code></li>
+<li class="executed"><code>        first_pass = super(LocationTimezoneAwareForm, self).clean()</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>        for fieldname in self.fields.keys():</code></li>
+<li class="executed"><code>            field = self.fields[fieldname]</code></li>
+<li class="executed"><code>            if isinstance(field, LocationTimezoneAwareDateTimeField):</code></li>
+<li class="executed"><code>                if hasattr(self, 'location'):  # a location has been assigned to the form</code></li>
+<li class="executed"><code>                    first_pass[fieldname] = time_at(first_pass[fieldname], self.location)</code></li>
+<li class="ignored"><code></code></li>
+<li class="executed"><code>        return first_pass</code></li>
   </ol>
 </div>
 
 <div class="nav">
-  <a href="timezones.management.commands.load_timezones.html">timezones.management.commands.load_timezones</a> &lt;&lt;
+  <a href="timezones.exceptions.html">timezones.exceptions</a> &lt;&lt;
   <a href="../index.html">index</a>
-  &gt;&gt; <a href="timezones.utils.html">timezones.utils</a>
+  &gt;&gt; <a href="timezones.management.commands.load_timezones.html">timezones.management.commands.load_timezones</a>
 </div>
 
   </body>
