@@ -198,3 +198,9 @@ class TimezoneFormTests(TestCase):
 
         self.assertEqual(form.is_valid(), True)
         self.assertEqual(form.cleaned_data['time'], timezone('America/Chicago').localize(datetime.datetime(2013, 3, 18, 12)))
+
+    def test_no_submitted(self):
+        form = TzForm({})
+        form.location = self.loc
+
+        self.assertEqual(form.is_valid(), False)

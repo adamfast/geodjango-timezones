@@ -15,6 +15,25 @@ class LocationTimezoneAwareForm(forms.Form):
             field = self.fields[fieldname]
             if isinstance(field, LocationTimezoneAwareDateTimeField):
                 if hasattr(self, 'location'):  # a location has been assigned to the form
-                    first_pass[fieldname] = time_at(first_pass[fieldname], self.location)
+                    try:
+                        first_pass[fieldname] = time_at(first_pass[fieldname], self.location)
+                    except KeyError:
+                        pass
+
+        return first_pass
+
+
+class LocationTimezoneAwareModelForm(forms.ModelForm):
+    def clean(self):
+        first_pass = super(LocationTimezoneAwareModelForm, self).clean()
+
+        for fieldname in self.fields.keys():
+            field = self.fields[fieldname]
+            if isinstance(field, LocationTimezoneAwareDateTimeField):
+                if hasattr(self, 'location'):  # a location has been assigned to the form
+                    try:
+                        first_pass[fieldname] = time_at(first_pass[fieldname], self.location)
+                    except KeyError:
+                        pass
 
         return first_pass
