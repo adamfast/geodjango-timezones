@@ -53,6 +53,17 @@ class TimezoneTests(TestCase):
         self.assertEqual(str(in_ny), '2012-04-15 11:00:00-04:00')
         self.assertEqual(str(in_ny.tzinfo), 'America/New_York')
 
+    def test_lawrence_ks_datetime_none(self):
+        loc = Point((-95.235278, 38.971667))  # lawrence, ks
+
+        the_time_non_dst = None
+
+        the_timezone = timezone_for(loc)
+        self.assertEqual(the_timezone, timezone('America/Chicago'))
+
+        with_zone = time_at(the_time_non_dst, loc)
+        self.assertEqual(with_zone, None)
+
     def test_lawrence_ks_geopy(self):
         # GEOPY IS LATITUDE, LONGITUDE
         loc = GeoPyPoint(38.971667, -95.235278)  # lawrence, ks

@@ -66,7 +66,7 @@ def time_at(the_datetime, location):
 
     tzinfo = timezone_for(location)
 
-    if tzinfo != False:  # also type-check that the_datetime is a datetime or something we can replace the TZinfo on
+    if tzinfo != False and the_datetime != None:  # also type-check that the_datetime is a datetime or something we can replace the TZinfo on
         the_datetime = the_datetime.replace(tzinfo=None)  # strip the existing (if there) timezone out so we can re-localize
         return tzinfo.localize(the_datetime)
 
