@@ -1,6 +1,6 @@
-Django==1.4.5
-psycopg2==2.4.6
-pytz==2013b
-django_coverage==1.2.2
-coverage==3.6
+Django==1.8.4
+psycopg2==2.6.1
+pytz==2015.4
+django_coverage==1.2.4
+coverage==3.7.1
 geopy==0.95

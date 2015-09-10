@@ -22,7 +22,7 @@ class TimezoneTests(TestCase):
     fixtures = ['timezones.json']
 
     def test_admin(self):
-        admin = User.objects.create(username='testadmin', is_superuser=True)
+        admin = User.objects.create(username='testadmin', is_superuser=True, is_staff=True)
         admin.set_password('stuff')
         admin.save()
 

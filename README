@@ -1,4 +1,4 @@
-This app provides models to store Timezone data from the Creative Commons Zero shapefile (the _mp version which uses multipolygon fields) published at http://efele.net/maps/tz/world/, as well as a script to load the data into your database.
+This app provides models to store Timezone data from the Creative Commons Zero shapefile (the _mp version which uses multipolygon fields) published at http://efele.net/maps/tz/world/, as well as a script to load the data into your database. (last version tested was data from November 26, 2013, latest version available as of 9/10/2015)
 
 It's useful for applications where the user enters times related to a location (i.e. specifying a pickup time for a rental car, or business hours)
 
@@ -11,4 +11,3 @@ INSTALLATION:
 	To install, add 'timezones' to your installed apps, syncdb or migrate (if you use South)
 
 Loading is accomplished by using manage.py load_timezones --path=<path_to_shapefile_directory>, the app will automatically add the appropriate "tz_world_mp.shp" to the end of the path.
-
