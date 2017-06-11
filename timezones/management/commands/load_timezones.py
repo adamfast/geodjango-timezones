@@ -25,10 +25,35 @@ def timezone_import(path=''):  # pragma: no cover
         raise NoShapeFileException
 
 
+def timezone_boundary_builder_import(path=''):
+    from django.contrib.gis.gdal import DataSource
+
+    timezone_mapping = {
+        'tzid': 'tzid',
+        'mpoly': 'POLYGON',
+    }
+    if os.path.exists(path):
+        # spelunk the source
+        ds = DataSource(path)
+        layer = ds[0]
+        print('Fields: %s' % layer.fields)
+        print('Geom Type: %s' % layer.geom_type)
+        print('SRS: %s' % layer.srs)
+
+        lm = LayerMapping(Timezone, path, timezone_mapping)
+        lm.save(verbose=True)
+    else:
+        raise NoShapeFileException
+
+
 class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
         make_option('--path', default='', dest='path',
-            help='The directory where the timezone shapefile is stored.'),
+                    help='The directory where the timezone shapefile is stored.'),
+        make_option('--tz_world', default=False, dest='tz_world',
+                    help='Use old tz_world dataset'),
+        make_option('--clear_timezones', default=False, dest='clear_timezones', action='store_true',
+                    help='Clear all timezones before import'),
     )
 
     args = ''
@@ -37,4 +62,15 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         base_path = options['path']
 
-        timezone_import(base_path)
+        if options['clear_timezones']:
+            print("Clearing all timezones...")
+            Timezone.objects.all().delete()
+            print('Done clearing all timezones.')
+
+        if options['tz_world']:  # legacy mode
+            # for backwards compatibility, the PATH argument here is a folder, not a file.
+            timezone_import(base_path)
+
+        else:  # geometries from https://github.com/evansiroky/timezone-boundary-builder
+            # because it makes more sense now, this PATH is to the complete shapefile
+            timezone_boundary_builder_import(base_path)
