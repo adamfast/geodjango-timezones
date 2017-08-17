@@ -1,4 +1,6 @@
-This app provides models to store Timezone data from the Creative Commons Zero shapefile (the _mp version which uses multipolygon fields) published at http://efele.net/maps/tz/world/, as well as a script to load the data into your database. (last version tested was data from November 26, 2013, latest version available as of 9/10/2015)
+This app provides models to store Timezone data from a couple sources:
+  - Timezone Boundary Builder (https://github.com/evansiroky/timezone-boundary-builder) which uses OpenStreetMap data to generate shapefiles as well. You can download timezones.shapefile.zip
+  - the Creative Commons Zero shapefile (the _mp version which uses multipolygon fields) published at http://efele.net/maps/tz/world/, as well as a script to load the data into your database. (last version tested was data from May 28, 2016) This data source is no longer maintained by its author.
 
 It's useful for applications where the user enters times related to a location (i.e. specifying a pickup time for a rental car, or business hours)
 
@@ -6,8 +8,11 @@ It is useful for finding tzids you can feed to datetime and Django from a geomet
 
 fixtures/ contains timezones.json which includes an archived copy of the data for the United States for testing purposes. As this data may change, make sure you use the shapefile and not this data for your application.
 
+Tested with Django 1.11 on Python 2.7
 
 INSTALLATION:
-	To install, add 'timezones' to your installed apps, syncdb or migrate (if you use South)
+	To install, add 'timezones' to your installed apps and run `manage.py migrate`
 
-Loading is accomplished by using manage.py load_timezones --path=<path_to_shapefile_directory>, the app will automatically add the appropriate "tz_world_mp.shp" to the end of the path.
+Loading is accomplished by using `manage.py load_timezones --path=<path_to_shapefile_directory>``, the app will automatically add the appropriate "tz_world_mp.shp" to the end of the path.
+
+IF you are using the Creative Commons Zero shapefile from efele.net that is no longer being updated, you will need to pass --tz_world to
