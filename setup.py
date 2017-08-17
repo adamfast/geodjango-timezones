@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='geodjango-timezones',
-    version='0.1',
+    version='1.0',
     description='Models to store and scripts to load timezone shapefiles to be usable inside a GeoDjango application.',
     author='Adam Fast',
     author_email='',
