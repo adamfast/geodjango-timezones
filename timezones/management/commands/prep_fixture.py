@@ -7,7 +7,6 @@ from timezones.models import *
 
 
 class Command(BaseCommand):
-    option_list = BaseCommand.option_list
     args = ''
     help = 'Delete timezones not needed for tests from the database.'
 

@@ -47,17 +47,15 @@ def timezone_boundary_builder_import(path=''):
 
 
 class Command(BaseCommand):
-    option_list = BaseCommand.option_list + (
-        make_option('--path', default='', dest='path',
-                    help='The directory where the timezone shapefile is stored.'),
-        make_option('--tz_world', default=False, dest='tz_world',
-                    help='Use old tz_world dataset'),
-        make_option('--clear_timezones', default=False, dest='clear_timezones', action='store_true',
-                    help='Clear all timezones before import'),
-    )
-
     args = ''
     help = 'Load timezones from the shapefile into the database.'
+
+    def add_arguments(self, parser):
+        parser.add_argument('--path', default='', dest='path',
+                            help='The directory where the timezone shapefile is stored.')
+        parser.add_argument('--tz_world', default=False, dest='tz_world', help='Use old tz_world dataset')
+        parser.add_argument('--clear_timezones', default=False, dest='clear_timezones', action='store_true',
+                            help='Clear all timezones before import')
 
     def handle(self, *args, **options):
         base_path = options['path']
