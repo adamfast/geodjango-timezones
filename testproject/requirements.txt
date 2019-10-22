@@ -1,4 +1,4 @@
-Django==1.8.4
+Django==1.11.23
 psycopg2==2.6.1
 pytz==2015.4
 django_coverage==1.2.4
